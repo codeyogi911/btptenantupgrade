@@ -27,11 +27,10 @@ To use this action, add the following steps to your `.github/workflows` YAML fil
 
 ```yaml
 steps:
-- name: Checkout
-  uses: actions/checkout@v2
+# -- Previous steps --
 
 - name: Upgrade Tenant Databases
-  uses: codeyogi911/sap-btp-tenant-upgrade@v1
+  uses: codeyogi911/btptenantupgrade@v1
   with:
     tenants: '["tenant1", "tenant2"]'
     options: '{ "_": { "hdi": { "deploy": { "trace": true, "auto_undeploy": true } } } }'
@@ -40,3 +39,5 @@ steps:
     xsuaaUrl: 'https://example-xsuaa-service/oauth/token'
     mtxUrl: 'https://example-mtx-service/-/cds/saas-provisioning/upgrade'
     timeout: 600000
+
+# -- Next steps --
