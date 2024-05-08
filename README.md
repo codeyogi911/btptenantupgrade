@@ -31,7 +31,7 @@ steps:
   uses: actions/checkout@v2
 
 - name: Upgrade Tenant Databases
-  uses: <your-github-username>/sap-btp-tenant-upgrade@v1
+  uses: codeyogi911/sap-btp-tenant-upgrade@v1
   with:
     tenants: '["tenant1", "tenant2"]'
     options: '{ "_": { "hdi": { "deploy": { "trace": true, "auto_undeploy": true } } } }'
