@@ -1,0 +1,53 @@
+name: SAP BTP Tenant Upgrade
+description: Upgrades Tenants in SAP BTP to the latest version
+branding:
+  icon: upload-cloud
+  color: black
+inputs:
+  tenants:
+    description: "List of tenants to upgrade"
+    required: true
+    default: "[]"
+  options:
+    description: "Upgrade options"
+    required: false
+    default: '{ "_": { "hdi": { "deploy": { "trace": true, "auto_undeploy": true } } } }'
+  xsuaaClientId:
+    description: "XSUAA Client ID"
+    required: true
+  xsuaaClientSecret:
+    description: "XSUAA Client Secret"
+    required: true
+  xsuaaUrl:
+    description: "XSUAA URL"
+    required: true
+  mtxUrl:
+    description: "MTX URL"
+    required: true
+  timeout:
+    description: "Timeout in milliseconds"
+    default: "600000"
+
+runs:
+  using: composite
+  steps:
+    - name: Get Token for mtx service
+      id: get-token
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: "${{ inputs.xsuaaUrl }}/oauth/token"
+        method: "POST"
+        username: ${{ inputs.xsuaaClientId }}
+        password: ${{ inputs.xsuaaClientSecret }}
+        customHeaders: '{"Content-Type": "application/x-www-form-urlencoded", "Accept": "application/json"}'
+        data: "grant_type=client_credentials"
+
+    - name: Upgrade tenant databases
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: "${{ inputs.mtxUrl }}/-/cds/saas-provisioning/upgrade"
+        method: "POST"
+        bearerToken: ${{ fromJson(steps.get-token.outputs.response).access_token }}
+        customHeaders: '{"Content-Type": "application/json"}'
+        data: '{ "tenants": ${{ inputs.tenants }}, "options": ${{ inputs.options }} }'
+        timeout: ${{ inputs.timeout }}
