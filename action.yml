@@ -1,7 +1,7 @@
 name: SAP BTP Tenant Upgrade
 description: Upgrades Tenants in SAP BTP to the latest version
 branding:
-  icon: upload-cloud
+  icon: chevrons-up
   color: black
 inputs:
   tenants:
